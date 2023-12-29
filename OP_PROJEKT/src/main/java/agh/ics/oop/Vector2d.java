@@ -2,6 +2,8 @@ package agh.ics.oop;
 
 import java.util.Objects;
 
+import static java.lang.Math.round;
+
 public class Vector2d {
     private final int x;
 
@@ -71,5 +73,11 @@ public class Vector2d {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+
+    public static Vector2d randomPosition(int maxWidth, int maxHeight){
+        return new Vector2d((int) round(Math.random() * (maxWidth - 1)), (int) round(Math.random() * (maxHeight - 1)));
+
     }
 }
