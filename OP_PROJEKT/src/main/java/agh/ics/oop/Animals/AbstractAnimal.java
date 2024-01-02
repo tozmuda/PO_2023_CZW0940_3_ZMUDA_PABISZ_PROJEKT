@@ -63,16 +63,14 @@ public abstract class AbstractAnimal implements Animal {
                 this.genes.add(a2.getGenes().get(i));
             }
         }
-        else{
-            for(int i=0; i<secondNumberOfGenes; i++) {
+        else {
+            for (int i = 0; i < secondNumberOfGenes; i++) {
                 this.genes.add(a2.getGenes().get(i));
             }
-            for(int i=secondNumberOfGenes; i<a1.getGenes().size(); i++) {
+            for (int i = secondNumberOfGenes; i < a1.getGenes().size(); i++) {
                 this.genes.add(a1.getGenes().get(i));
             }
         }
-
-        // trzeba gdzieś jeszcze dodać mutacje
 
     }
 
@@ -154,5 +152,9 @@ public abstract class AbstractAnimal implements Animal {
     @Override
     public List<Integer> getGenes() {
         return genes;
+    }
+
+    public void setGene(int geneNumber, int gene) {
+        this.genes.set(geneNumber, gene);
     }
 }

@@ -10,7 +10,10 @@ import agh.ics.oop.Maps.MapVersion;
 import agh.ics.oop.Maps.RainForestMap;
 import agh.ics.oop.Maps.TempMapVisualizer;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Math.round;
 
 // 1. usunięcie martwych zwierząt
 // 2. przemieszczenie zwierząt
@@ -110,9 +113,25 @@ public class Simulation implements Runnable{
                 AbstractAnimal a2 = animalList.get(i * 2 + 1);
                 if (a1.getEnergy() < parameters.energyNeededForBreeding() || a2.getEnergy() < parameters.energyNeededForBreeding()) break;
 
+                int numberOfMutations = (int) round(Math.random() * (parameters.maxMutations() - parameters.minMutations()) + parameters.minMutations());
+                ArrayList<Integer> mutatingGenes = new ArrayList<>();
+                while(numberOfMutations > 0){
+                    int randomGene = (int) round(Math.random() * (a1.getGenes().size() - 1));
+                    if(!mutatingGenes.contains(randomGene)) {
+                        mutatingGenes.add(randomGene);
+                        numberOfMutations -= 1;
+                    }
+                }
+
+                AbstractAnimal a3 = null;
                 switch (parameters.animalsVersion()){
-                    case BASIC -> map.place(new AnimalBasic(a1, a2, days, parameters.energyLostForBreeding()));
-                    case BACK_AND_FORTH -> map.place(new AnimalBackAndForth(a1, a2, days, parameters.energyLostForBreeding()));
+                    case BASIC -> a3 = new AnimalBasic(a1, a2, days, parameters.energyLostForBreeding());
+                    case BACK_AND_FORTH -> a3 = new AnimalBackAndForth(a1, a2, days, parameters.energyLostForBreeding());
+                }
+                map.place(a3);
+                for(int j=0; j<mutatingGenes.size(); j++){
+                    int rand = (int) round(Math.random() * 7);
+                    a3.setGene(mutatingGenes.get(i), rand);
                 }
             }
         }
