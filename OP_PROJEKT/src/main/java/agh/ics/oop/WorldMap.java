@@ -11,8 +11,7 @@ public interface WorldMap {
     void move(AbstractAnimal animal);
     List<Field> getFields();
     void generateNewPlants(int numberOfPlants);
-    void removeDeadAnimals();
+    void removeDeadAnimals(int days);
     WorldElement objectAt(Vector2d position);
     public List<AbstractAnimal> getAllAnimals();
-
 }

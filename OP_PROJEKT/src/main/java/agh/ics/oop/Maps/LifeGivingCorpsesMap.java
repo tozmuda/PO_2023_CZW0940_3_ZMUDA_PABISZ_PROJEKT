@@ -33,14 +33,14 @@ public class LifeGivingCorpsesMap extends AbstractWorldMap {
     }
 
     @Override
-    public void removeDeadAnimals() {
+    public void removeDeadAnimals(int days) {
         updatePreferredPositions();
         for(AbstractAnimal animal : allAnimalsList){
             if (animal.getEnergy() == 0){
                 preferredPositions.put(animal.getPosition(), numberOfPreferredDays);
             }
         }
-        super.removeDeadAnimals();
+        super.removeDeadAnimals(days);
     }
 
     @Override

@@ -33,13 +33,12 @@ public class Simulation implements Runnable{
             case RAIN_FOREST -> new RainForestMap(mapHeight, mapWidth, plantEnergySupply);
             case LIFE_GIVING_CORPSES -> new LifeGivingCorpsesMap(mapHeight, mapWidth, plantEnergySupply, 5);
         };
-        this.days = 0;      // 0 czy 1?
+        this.days = 0;
         this.parameters = new SimulationParameters(animalsVersion, delay, numberOfNewPlants, energyNeededForBreeding,
                 energyLostForBreeding, minMutations, maxMutations);
 
         generateAnimals(startNumberOfAnimals, startEnergy, genomeLength);
         this.map.generateNewPlants(startNumberOfPlants);
-
     }
 
 
@@ -59,7 +58,7 @@ public class Simulation implements Runnable{
         while (true){
             days++;
             System.out.printf("Days: %d%n", days);
-            removeDead();
+            removeDead(this.days);
             moveAnimals();
             eatPlants();
             breeding();
@@ -68,8 +67,8 @@ public class Simulation implements Runnable{
         }
     }
 
-    private void removeDead(){
-        map.removeDeadAnimals();
+    private void removeDead(int days){
+        map.removeDeadAnimals(days);
     }
 
     private void moveAnimals(){
@@ -96,6 +95,7 @@ public class Simulation implements Runnable{
             if (plant != null && !field.getAnimals().isEmpty()){
                 AbstractAnimal animal = field.getAnimalsOrder().get(0);
                 animal.addEnergy(plant.getEnergySupply());
+                animal.incrementPlantsEaten();
                 field.removePlant();
             }
         }

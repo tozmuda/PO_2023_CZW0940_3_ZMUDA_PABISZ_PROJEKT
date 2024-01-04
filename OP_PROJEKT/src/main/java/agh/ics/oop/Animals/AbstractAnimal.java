@@ -18,6 +18,10 @@ public abstract class AbstractAnimal implements Animal {
     private int energy;
     private final int spawnDay;
     private int numberOfChildren = 0;
+    private int plantsEaten = 0;
+    private int daysAlive = 0;
+    private int dayOfDeath = 0;
+    private List<Animal> children = new ArrayList<>();
 
     // orientacja i aktualny gen są losowe
     private AbstractAnimal(int numberOfGenes, int spawnDay, int energy){
@@ -44,8 +48,6 @@ public abstract class AbstractAnimal implements Animal {
     public AbstractAnimal(AbstractAnimal a1, AbstractAnimal a2, int spawnDay, int energyLost){
         this(a1.getGenes().size(), spawnDay, 2 * energyLost);
         this.position = a1.getPosition();
-        a1.addChild();
-        a2.addChild();
         a1.subtractEnergy(energyLost);
         a2.subtractEnergy(energyLost);
 
@@ -71,12 +73,14 @@ public abstract class AbstractAnimal implements Animal {
                 this.genes.add(a1.getGenes().get(i));
             }
         }
-
+        a1.addChild(this);
+        a2.addChild(this);
     }
 
     @Override
-    public void addChild(){
+    public void addChild(Animal child){
         this.numberOfChildren++;
+        this.children.add(child);
     }
 
     @Override
@@ -154,7 +158,52 @@ public abstract class AbstractAnimal implements Animal {
         return genes;
     }
 
+    @Override
     public void setGene(int geneNumber, int gene) {
         this.genes.set(geneNumber, gene);
+    }
+
+    @Override
+    public int getPlantsEaten() {
+        return plantsEaten;
+    }
+
+    @Override
+    public void incrementPlantsEaten(){
+        this.plantsEaten += 1;
+    }
+
+    @Override
+    public int getDaysAlive() {
+        return this.daysAlive;
+    }
+
+    @Override
+    public void incrementDaysAlive(){
+        this.daysAlive += 1;
+    }
+
+    @Override
+    public void setDayOfDeath(int dayOfDeath) {
+        this.dayOfDeath = dayOfDeath;
+    }
+
+    @Override
+    public int getDayOfDeath() {
+        return this.dayOfDeath;
+    }
+
+    @Override
+    public int getOffspringCount(){
+        int cnt = -1;
+        List<Animal> t = new ArrayList<>();
+        t.add(this);
+        while(!t.isEmpty()){
+            Animal animal = t.get(0);
+            t.remove(0);
+            cnt+=1;
+            t.addAll(animal.children);
+        }
+        return cnt;
     }
 }

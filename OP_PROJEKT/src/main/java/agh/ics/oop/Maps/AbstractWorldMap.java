@@ -72,17 +72,21 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public void removeDeadAnimals(){
+    public void removeDeadAnimals(int days){
         List<AbstractAnimal> toRemove= new LinkedList<>();
         for(AbstractAnimal animal : allAnimalsList){
             if (animal.getEnergy() == 0){
                 toRemove.add(animal);
+            }
+            else{
+                animal.incrementDaysAlive();
             }
         }
 
         for(AbstractAnimal animal : toRemove){
             allAnimalsList.remove(animal);
             fields.get(animal.getPosition()).removeAnimal(animal);
+            animal.setDayOfDeath(days);
         }
 
     }
@@ -96,5 +100,9 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected abstract List<Vector2d> getPreferredPositions();
     protected abstract List<Vector2d> getOtherPositions();
 
+    public int getAnimalCount(){
+        return this.allAnimalsList.size();
+    }
 
+    
 }
