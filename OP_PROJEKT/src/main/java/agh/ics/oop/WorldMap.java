@@ -14,4 +14,16 @@ public interface WorldMap {
     void removeDeadAnimals(int days);
     WorldElement objectAt(Vector2d position);
     public List<AbstractAnimal> getAllAnimals();
+
+    int getAnimalCount();
+    int getPlantCount();
+    int getFreeFields();
+    float getAverageEnergy();
+    float getAverageDaysLived();
+    float getAverageChildCount();
+    List<Integer> getMostPopularGenotype();
+    void addObserver(MapChangeListener observer);
+    void removeObserver(MapChangeListener observer);
+    void mapChanged();
+
 }

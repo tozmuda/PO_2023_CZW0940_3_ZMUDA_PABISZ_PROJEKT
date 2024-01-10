@@ -9,6 +9,7 @@ import agh.ics.oop.Maps.LifeGivingCorpsesMap;
 import agh.ics.oop.Maps.MapVersion;
 import agh.ics.oop.Maps.RainForestMap;
 import agh.ics.oop.Maps.TempMapVisualizer;
+import agh.ics.oop.Observers.FileOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class Simulation implements Runnable{
             case RAIN_FOREST -> new RainForestMap(mapHeight, mapWidth, plantEnergySupply);
             case LIFE_GIVING_CORPSES -> new LifeGivingCorpsesMap(mapHeight, mapWidth, plantEnergySupply, 5);
         };
+        this.map.addObserver(new FileOutput());
         this.days = 0;
         this.parameters = new SimulationParameters(animalsVersion, delay, numberOfNewPlants, energyNeededForBreeding,
                 energyLostForBreeding, minMutations, maxMutations);
@@ -63,7 +65,7 @@ public class Simulation implements Runnable{
             eatPlants();
             breeding();
             generatePlants();
-
+            this.map.mapChanged();
         }
     }
 
