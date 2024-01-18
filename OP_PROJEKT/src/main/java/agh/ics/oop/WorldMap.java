@@ -3,6 +3,7 @@ package agh.ics.oop;
 import agh.ics.oop.Animals.AbstractAnimal;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorldMap {
     int getHeight();
@@ -12,7 +13,7 @@ public interface WorldMap {
     List<Field> getFields();
     void generateNewPlants(int numberOfPlants);
     void removeDeadAnimals(int days);
-    WorldElement objectAt(Vector2d position);
+    Optional<WorldElement> objectAt(Vector2d position);
     public List<AbstractAnimal> getAllAnimals();
 
     int getAnimalCount();
@@ -25,5 +26,7 @@ public interface WorldMap {
     void addObserver(MapChangeListener observer);
     void removeObserver(MapChangeListener observer);
     void mapChanged();
+
+    int getMaxEnergy();
 
 }

@@ -4,6 +4,8 @@ import agh.ics.oop.Animal;
 import agh.ics.oop.MapDirection;
 import agh.ics.oop.Maps.AbstractWorldMap;
 import agh.ics.oop.Vector2d;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -206,4 +208,18 @@ public abstract class AbstractAnimal implements Animal {
         }
         return cnt;
     }
+
+
+    @Override
+    public String getImageName(int maxEnergy){
+        if (energy == maxEnergy) return "images/a4.png";
+        int image = round((float) (energy) / (maxEnergy) * 3);
+        return switch (image){
+            case 0 -> "images/a1.png";
+            case 1 -> "images/a2.png";
+            case 2 -> "images/a3.png";
+            default -> "images/a4.png";
+        };
+    }
+
 }

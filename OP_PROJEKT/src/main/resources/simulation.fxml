@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            minHeight="700.0" minWidth="1200.0"
+            fx:controller="agh.ics.oop.Presenter.SimulationPresenter">
+    <center>
+        <VBox>
+            <GridPane fx:id="mapGrid" prefHeight="650.0" prefWidth="800.0" gridLinesVisible="true" alignment="CENTER">
+            </GridPane>
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints prefWidth="340.0"/>
+                    <ColumnConstraints prefWidth="120.0"/>
+                    <ColumnConstraints prefWidth="120.0"/>
+                    <ColumnConstraints prefWidth="120.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints prefHeight="40.0"/>
+                    <RowConstraints prefHeight="70.0"/>
+                </rowConstraints>
+                <HBox prefHeight="70.0" prefWidth="200.0" GridPane.rowIndex="1" GridPane.halignment="CENTER"
+                      GridPane.valignment="CENTER">
+                    <Label alignment="CENTER" prefHeight="22.0" prefWidth="138.0" text="Speed:">
+                        <font>
+                            <Font size="15.0"/>
+                        </font>
+                    </Label>
+                    <Slider fx:id="speedSlider" cache="true" majorTickUnit="1.0" max="10.0" min="1.0"
+                            prefHeight="38.0" prefWidth="237.0" showTickLabels="true" showTickMarks="true"
+                            value="5.0" onMouseDragged="#onSliderChanged"/>
+                </HBox>
+                <Button fx:id="pauseButton" prefHeight="26.0" prefWidth="93.0" text="Pause"
+                        GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP"
+                        onAction="#onSimulationPauseClicked">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Button>
+                <Button layoutX="376.0" layoutY="10.0" prefHeight="26.0" prefWidth="93.0"
+                        text="Stop" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP"
+                        onAction="#onSimulationStopClicked">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Button>
+            </GridPane>
+        </VBox>
+
+    </center>
+    <top>
+        <Label fx:id="titleLabel" alignment="CENTER" prefHeight="39.0" prefWidth="675.0" text="DARWIN WORLD SIMULATION DAY 0" BorderPane.alignment="CENTER">
+            <font>
+                <Font name="System Bold" size="27.0" />
+            </font>
+        </Label>
+    </top>
+    <right>
+        <VBox prefHeight="700.0" prefWidth="280.0" BorderPane.alignment="CENTER">
+            <Label alignment="TOP_CENTER" prefHeight="42.0" prefWidth="330.0" text="Statistics">
+                <font>
+                    <Font name="System Bold" size="25.0"/>
+                </font>
+            </Label>
+            <GridPane prefHeight="175.0" prefWidth="322.0">
+                <columnConstraints>
+                    <ColumnConstraints prefWidth="184.6"/>
+                    <ColumnConstraints prefWidth="136.6"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                </rowConstraints>
+                <Label prefHeight="22.0" prefWidth="98.0" text="Animals:" GridPane.halignment="LEFT"
+                       GridPane.valignment="CENTER">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="plantsLabel" layoutX="53.0" layoutY="13.0" prefHeight="22.0" prefWidth="162.0"
+                       text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1"
+                       GridPane.valignment="CENTER">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="freeFieldsLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0" prefWidth="134.0"
+                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="animalsLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0" prefWidth="154.0"
+                       text="15" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="childCountLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="125.0"
+                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="lifetimeLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="126.0"
+                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="energyLevelLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="152.0"
+                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="28.0" layoutY="13.0" prefHeight="22.0" prefWidth="194.0" text="Average child count:"
+                       GridPane.halignment="LEFT" GridPane.rowIndex="5">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="200.0" text="Average lifetime:"
+                       GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="198.0"
+                       text="Average energy level:" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="105.0" text="Free fields:"
+                       GridPane.halignment="LEFT" GridPane.rowIndex="2">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="190.0" text="Plants:"
+                       GridPane.halignment="LEFT" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+            </GridPane>
+            <Label alignment="CENTER" prefHeight="26.0" prefWidth="323.0" text="The most popular genome:">
+                <font>
+                    <Font size="15.0"/>
+                </font>
+            </Label>
+            <Label fx:id="popularGenomeLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="271.0" prefHeight="46.0"
+                   prefWidth="272.0" text="[1, 8, 1, 0, 6, 9, 1, 1, 1]">
+                <font>
+                    <Font size="15.0"/>
+                </font>
+            </Label>
+            <Label alignment="BOTTOM_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="42.0" prefWidth="330.0"
+                   text="Animal statistics">
+                <font>
+                    <Font name="System Bold" size="20.0"/>
+                </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="10.0" layoutY="228.0" prefHeight="27.0" prefWidth="339.0" text="Genome:">
+                <font>
+                    <Font size="15.0"/>
+                </font>
+            </Label>
+            <Label fx:id="animalGenomeLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="258.0" prefHeight="26.0"
+                   prefWidth="272.0" text="[1, 8, 1, 0, 6, 9, 1, 1, 1]">
+                <font>
+                    <Font size="15.0"/>
+                </font>
+            </Label>
+            <GridPane layoutX="10.0" layoutY="52.0" prefHeight="220.0" prefWidth="250.0">
+                <columnConstraints>
+                    <ColumnConstraints prefWidth="175"/>
+                    <ColumnConstraints prefWidth="150"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                    <RowConstraints prefHeight="30.0"/>
+                </rowConstraints>
+                <Label prefHeight="22.0" prefWidth="98.0" text="Active gene:" GridPane.halignment="LEFT"
+                       GridPane.valignment="CENTER">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="animalEnergyLabel" layoutX="53.0" layoutY="13.0" prefHeight="22.0" prefWidth="162.0"
+                       text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1"
+                       GridPane.valignment="CENTER">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="animalChildrenLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0"
+                       prefWidth="146.0" text="3" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="animalPlantsLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0" prefWidth="134.0"
+                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="animalGeneLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0" prefWidth="154.0"
+                       text="1   (1)" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="animalDeathLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="125.0"
+                       text="-" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="animalAgeLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="126.0"
+                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="animalDescendantsLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0"
+                       prefWidth="152.0" text="15" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="28.0" layoutY="13.0" prefHeight="22.0" prefWidth="194.0" text="Day of death:"
+                       GridPane.halignment="LEFT" GridPane.rowIndex="6">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="200.0" text="Age (days):"
+                       GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="198.0" text="Descendants count:"
+                       GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="184.0" text="Child count:"
+                       GridPane.halignment="LEFT" GridPane.rowIndex="3">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="105.0" text="Eaten plants:"
+                       GridPane.halignment="LEFT" GridPane.rowIndex="2">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="190.0" text="Energy:"
+                       GridPane.halignment="LEFT" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+            </GridPane>
+        </VBox>
+    </right>
+</BorderPane>

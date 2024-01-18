@@ -26,21 +26,55 @@ public class Simulation implements Runnable{
     private int days;
     private final SimulationParameters parameters;
 
+    // TODO pokombinować z parametrami tu
+    private static final int DEFAULT_DELAY = 150;
+    private int currDelay = 5;
+
+    private boolean pause = false;
+    private boolean stop = false;
+
+
     // czy liczba dni przez które pola są preferowane też ma być parametrem?
-    public Simulation(int mapHeight, int mapWidth, MapVersion mapVersion, AnimalVersion animalsVersion, int delay, int numberOfNewPlants, int startNumberOfPlants,
+    public Simulation(int mapHeight, int mapWidth, MapVersion mapVersion, AnimalVersion animalsVersion, int numberOfNewPlants, int startNumberOfPlants,
                       int startNumberOfAnimals, int startEnergy, int plantEnergySupply, int energyNeededForBreeding, int energyLostForBreeding,
                       int minMutations, int maxMutations, int genomeLength) {
         this.map = switch (mapVersion){
             case RAIN_FOREST -> new RainForestMap(mapHeight, mapWidth, plantEnergySupply);
             case LIFE_GIVING_CORPSES -> new LifeGivingCorpsesMap(mapHeight, mapWidth, plantEnergySupply, 5);
         };
-        this.map.addObserver(new FileOutput());
+//        this.map.addObserver(new FileOutput());
         this.days = 0;
-        this.parameters = new SimulationParameters(animalsVersion, delay, numberOfNewPlants, energyNeededForBreeding,
+        this.parameters = new SimulationParameters(animalsVersion, numberOfNewPlants, energyNeededForBreeding,
                 energyLostForBreeding, minMutations, maxMutations);
 
         generateAnimals(startNumberOfAnimals, startEnergy, genomeLength);
         this.map.generateNewPlants(startNumberOfPlants);
+    }
+
+    public void setCurrDelay(int newDelay){
+        currDelay = newDelay;
+    }
+
+    public void pauseSimulation(){
+        pause = true;
+    }
+
+    public void resumeSimulation(){
+        pause = false;
+    }
+
+    public void stopSimulation(){
+        stop = true;
+    }
+
+    public int getDays(){ return days; }
+
+    public WorldMap getMap() {
+        return map;
+    }
+
+    public void addMapObserver(MapChangeListener observer){
+        map.addObserver(observer);
     }
 
 
@@ -54,18 +88,23 @@ public class Simulation implements Runnable{
     }
 
     public void run() {
-        TempMapVisualizer vis = new TempMapVisualizer(map);
-        System.out.println(vis.draw(new Vector2d(0, 0), new Vector2d(map.getWidth(), map.getHeight())));
-        // jakoś będzie trzeba przerwać
-        while (true){
-            days++;
-            System.out.printf("Days: %d%n", days);
-            removeDead(this.days);
-            moveAnimals();
-            eatPlants();
-            breeding();
-            generatePlants();
-            this.map.mapChanged();
+        map.mapChanged();
+        while (!stop){
+            try {
+                    Thread.sleep(DEFAULT_DELAY);
+                }
+                catch (InterruptedException e){
+                    throw new RuntimeException();
+                }
+            if(!pause) {
+                days++;
+                System.out.printf("Days: %d%n", days);
+                removeDead(this.days);
+                moveAnimals();
+                eatPlants();
+                breeding();
+                generatePlants();
+            }
         }
     }
 
@@ -79,10 +118,8 @@ public class Simulation implements Runnable{
         for(AbstractAnimal animal : allAnimals){
             map.move(animal);
             try {
-                Thread.sleep(parameters.delay());
-                // TODO będzie trzeba usunąć rysowanie mapy w konsoli, na razie dałam dla testów
-                TempMapVisualizer vis = new TempMapVisualizer(map);
-                System.out.println(vis.draw(new Vector2d(0, 0), new Vector2d(map.getWidth(), map.getHeight())));
+                Thread.sleep(DEFAULT_DELAY / currDelay);
+                this.map.mapChanged();
             }
             catch (InterruptedException e){
                 throw new RuntimeException();
@@ -103,8 +140,6 @@ public class Simulation implements Runnable{
         }
     }
 
-
-    // jeszcze dodać warunek kiedy może się rozmnażać
     private void breeding(){
         for(Field field : map.getFields()){
             List<AbstractAnimal> animalList = field.getAnimalsOrder();
@@ -133,7 +168,7 @@ public class Simulation implements Runnable{
                 map.place(a3);
                 for(int j=0; j<mutatingGenes.size(); j++){
                     int rand = (int) round(Math.random() * 7);
-                    a3.setGene(mutatingGenes.get(i), rand);
+                    a3.setGene(mutatingGenes.get(j), rand);
                 }
             }
         }

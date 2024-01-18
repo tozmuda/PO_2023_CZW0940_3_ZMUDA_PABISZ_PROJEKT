@@ -17,6 +17,7 @@ public class RainForestMap extends AbstractWorldMap {
 
     public RainForestMap(int height, int width, int plantEnergySupply) {
         super(height, width, plantEnergySupply);
+        System.out.println(height + " " + getForestHeight(height));
         forestLowerBound = (height - getForestHeight(height)) / 2;
         forestUpperBound = (height + getForestHeight(height)) / 2 - 1;
     }
@@ -24,7 +25,7 @@ public class RainForestMap extends AbstractWorldMap {
     // czasami wychodzi więcej niż 20% ale chciałam żeby było symetrycznie, także mam nadzieję że może tak być
     private int getForestHeight(int mapHeight){
         int forestHeight = (int) round(mapHeight / 5.0);
-        if (mapHeight - forestHeight % 2 == 1){
+        if ((mapHeight - forestHeight) % 2 == 1){
             if (forestHeight * 5 >= mapHeight ) forestHeight--;
             else forestHeight++;
         }

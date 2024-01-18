@@ -112,9 +112,9 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public WorldElement objectAt(Vector2d position) {
-        if(!fields.get(position).getAnimals().isEmpty()) return fields.get(position).getAnimals().get(0);
-        return fields.get(position).getPlant();
+    public Optional<WorldElement> objectAt(Vector2d position) {
+        if(!fields.get(position).getAnimals().isEmpty()) return Optional.of(fields.get(position).getAnimalsOrder().get(0));
+        return Optional.ofNullable(fields.get(position).getPlant());
     }
 
     protected abstract List<Vector2d> getPreferredPositions();
@@ -209,4 +209,13 @@ public abstract class AbstractWorldMap implements WorldMap {
         return mostPopularGenotype;
     }
 
+
+    @Override
+    public int getMaxEnergy() {
+        int maxi = 0;
+        for(AbstractAnimal animal : allAnimalsList){
+            if (maxi < animal.getEnergy()) maxi = animal.getEnergy();
+        }
+        return maxi;
+    }
 }
