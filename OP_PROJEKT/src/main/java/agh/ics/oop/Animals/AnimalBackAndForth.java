@@ -27,4 +27,7 @@ public class AnimalBackAndForth extends AbstractAnimal {
         }
     }
 
+    public void setGenomeDirection(GenomeDirection genomeDirection) {
+        this.genomeDirection = genomeDirection;
+    }
 }

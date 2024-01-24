@@ -206,4 +206,12 @@ public abstract class AbstractAnimal implements Animal {
         }
         return cnt;
     }
+
+    public void setDirection(MapDirection direction) {
+        this.direction = direction;
+    }
+
+    public void setCurrentGene(int currentGene) {
+        this.currentGene = currentGene;
+    }
 }
