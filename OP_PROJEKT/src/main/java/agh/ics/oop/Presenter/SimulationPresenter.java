@@ -1,23 +1,60 @@
 package agh.ics.oop.Presenter;
 
 import agh.ics.oop.*;
+import agh.ics.oop.Animals.AbstractAnimal;
+import agh.ics.oop.Maps.WorldMap;
+import agh.ics.oop.Observers.MapChangeListener;
+import agh.ics.oop.Observers.SimulationChangeListener;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+
 import java.util.Optional;
 
-import static java.lang.Math.round;
+public class SimulationPresenter implements MapChangeListener, SimulationChangeListener {
 
-public class SimulationPresenter implements MapChangeListener {
-
+    @FXML
+    private Label animalGenomeLabel;
+    @FXML
+    private Label animalEnergyLabel;
+    @FXML
+    private Label animalChildrenLabel;
+    @FXML
+    private Label animalPlantsLabel;
+    @FXML
+    private Label animalGeneLabel;
+    @FXML
+    private Label animalDeathLabel;
+    @FXML
+    private Label animalAgeLabel;
+    @FXML
+    private Label animalDescendantsLabel;
+    @FXML
+    private Button showPrefPositionsButton;
+    @FXML
+    private Button showPopularGenomeButton;
+    @FXML
+    private Button unfollowAnimalButton;
+    @FXML
+    private Label popularGenomeLabel;
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private Label plantsLabel;
+    @FXML
+    private Label freeFieldsLabel;
+    @FXML
+    private Label animalsLabel;
+    @FXML
+    private Label childCountLabel;
+    @FXML
+    private Label lifetimeLabel;
+    @FXML
+    private Label energyLevelLabel;
     @FXML
     private Slider speedSlider;
     @FXML
@@ -27,95 +64,144 @@ public class SimulationPresenter implements MapChangeListener {
     private Simulation simulation;
     private SimulationEngine simulationEngine;
     private WorldMap map;
-    private ImageGenerator imageGenerator;
+    private AbstractAnimal followedAnimal = null;
+    private MapDisplay mapDisplay;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setMap(WorldMap map){
         this.map = map;
-        int w = (int) round(mapGrid.getWidth()) - 10;
-        int h = (int) round(mapGrid.getHeight());
-        int cellSize = h / (map.getHeight() + 1);
-        if (cellSize > w / (map.getWidth() + 1)) cellSize = w / (map.getWidth() + 1);
-        imageGenerator = new ImageGenerator(cellSize - 1, (map.getWidth() + 1) * (map.getHeight() + 1), map.getAnimalCount(), map.getPlantCount());
+        this.mapDisplay = new MapDisplay(mapGrid, map, this);
     }
 
 
-    private void clearGrid() {
-        mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
-        mapGrid.getColumnConstraints().clear();
-        mapGrid.getRowConstraints().clear();
-    }
-//
-//    private ImageView getFieldImageView(int image_size) {
-//        Image image = new Image("images/field.png");
-//        ImageView fieldImageView = new ImageView(image);
-//        fieldImageView.setFitHeight(image_size);
-//        fieldImageView.setFitWidth(image_size);
-//        return fieldImageView;
-//    }
-
-    private ImageView getObjectDraw(Vector2d currentPosition,
-                                    int maxEnergy) {
-        Optional<WorldElement> opt = map.objectAt(currentPosition);
-        String imageName = "images/field.png";
-        if (opt.isPresent()) {
-            imageName = opt.get().getImageName(maxEnergy);
-        }
-        return imageGenerator.getImageView(imageName, simulation.getDays());
+    private void updateStatistics(int day){
+        titleLabel.setText(String.format("DARWIN WORLD SIMULATION DAY %d", day));
+        plantsLabel.setText("" + map.getPlantCount());
+        animalsLabel.setText("" + map.getAnimalCount());
+        freeFieldsLabel.setText("" + map.getFreeFields());
+        childCountLabel.setText("" + map.getAverageChildCount());
+        lifetimeLabel.setText("" + map.getAverageDaysLived());
+        energyLevelLabel.setText("" + map.getAverageEnergy());
+        popularGenomeLabel.setText("" + map.getMostPopularGenotype());
     }
 
-    public void drawMap(){
-        clearGrid();
-        int maxEnergy = map.getMaxEnergy();
-        int height = map.getHeight();
-        int width = map.getWidth();
-        int w = (int) round(mapGrid.getWidth()) - 10;
-        int h = (int) round(mapGrid.getHeight());
-
-        int cellSize = h / (height + 1);
-        if (cellSize > w / (width + 1)) cellSize = w / (width + 1);
-
-
-        for(int c = 0; c <= width; c++){
-            mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
-        }
-
-        for(int r = 0; r <= height; r++) {
-            mapGrid.getRowConstraints().add(new RowConstraints(cellSize));
-        }
-
-        for(int r = 0; r <= height; r++){
-            for(int c = 0; c <= width; c++){
-                ImageView objectView = getObjectDraw(new Vector2d(c, height - r), maxEnergy);
-                mapGrid.add(objectView, c, r, 1, 1);
-                GridPane.setHalignment(objectView, HPos.CENTER);
-                GridPane.setValignment(objectView, VPos.CENTER);
-            }
-        }
+    private void updateAnimalStatistics(){
+        animalGenomeLabel.setText("" + followedAnimal.getGenes());
+        int currGene = followedAnimal.getCurrentGene();
+        animalGeneLabel.setText(String.format("%d   (%d)", followedAnimal.getGenes().get(currGene), currGene));
+        animalEnergyLabel.setText("" + followedAnimal.getEnergy());
+        animalPlantsLabel.setText("" + followedAnimal.getPlantsEaten());
+        animalChildrenLabel.setText("" + followedAnimal.getNumberOfChildren());
+        animalDescendantsLabel.setText("" + followedAnimal.getOffspringCount());
+        animalAgeLabel.setText("" + followedAnimal.getDaysAlive());
+        if (followedAnimal.getDayOfDeath() == -1) animalDeathLabel.setText("-");
+        else animalDeathLabel.setText("" + followedAnimal.getDayOfDeath());
 
     }
+
     @Override
-    public void mapChanged(WorldMap worldMap) {
-        Platform.runLater(this::drawMap);
+    public void mapChanged(WorldMap worldMap, int maxEnergy) {
+        Platform.runLater(() -> {
+            mapDisplay.drawMap(followedAnimal, maxEnergy);
+            freeFieldsLabel.setText("" + map.getFreeFields());
+        });
+
+    }
+
+    @Override
+    public void dayChanged(WorldMap worldMap, int day) {
+        Platform.runLater(() -> updateStatistics(day));
+        if(followedAnimal != null) Platform.runLater(this::updateAnimalStatistics);
     }
 
     public void onSimulationPauseClicked(){
         if(pauseButton.getText().equals("Pause")){
             simulation.pauseSimulation();
             pauseButton.setText("Resume");
+            showPopularGenomeButton.setVisible(true);
+            showPrefPositionsButton.setVisible(true);
         }
         else{
             simulation.resumeSimulation();
             pauseButton.setText("Pause");
+            showPrefPositionsButton.setText("Show plant preferred positions");
+            showPopularGenomeButton.setText("Show animals with the dominating genome");
+            showPopularGenomeButton.setVisible(false);
+            showPrefPositionsButton.setVisible(false);
         }
     }
 
-    public void onSimulationStopClicked(){
+    public void onShowPrefPositionsClicked(){
+        if(showPrefPositionsButton.getText().startsWith("S")){
+            showPrefPositionsButton.setText("Hide plant preferred positions");
+            showPopularGenomeButton.setText("Show animals with the dominating genome");
+            Platform.runLater(() -> mapDisplay.drawMapWithPrefPositions(followedAnimal, map.getMaxEnergy()));
+        }
+        else{
+            Platform.runLater(() -> mapDisplay.drawMap(followedAnimal, map.getMaxEnergy()));
+            showPrefPositionsButton.setText("Show plant preferred positions");
+        }
+    }
+
+    public void onShowPopularGenomeClicked(){
+        if(showPopularGenomeButton.getText().startsWith("S")){
+            showPrefPositionsButton.setText("Show plant preferred positions");
+            showPopularGenomeButton.setText("Hide animals with the dominating genome");
+            Platform.runLater(() -> mapDisplay.drawMapWithPopularGenome(followedAnimal, map.getMaxEnergy()));
+        }
+        else{
+            Platform.runLater(() -> mapDisplay.drawMap(followedAnimal, map.getMaxEnergy()));
+            showPopularGenomeButton.setText("Show animals with the dominating genome");
+        }
+    }
+
+    public void simulationEnd(){
         simulation.stopSimulation();
         simulationEngine.awaitSimulationEnd();
     }
 
     public void onSliderChanged(){
         simulation.setCurrDelay((int) speedSlider.getValue());
+    }
+
+    public void onUnfollowButtonClicked(){
+        followedAnimal = null;
+        unfollowAnimalButton.setVisible(false);
+        animalGenomeLabel.setText("");
+        animalGeneLabel.setText("");
+        animalEnergyLabel.setText("");
+        animalPlantsLabel.setText("");
+        animalChildrenLabel.setText("");
+        animalDescendantsLabel.setText("");
+        animalAgeLabel.setText("");
+        animalDeathLabel.setText("");
+        Platform.runLater(() -> mapDisplay.drawMap(followedAnimal, map.getMaxEnergy()));
+        showPrefPositionsButton.setText("Show plant preferred positions");
+        showPopularGenomeButton.setText("Show animals with the dominating genome");
+    }
+
+    public void followAnimal(ImageView clickedImageView){
+        if(pauseButton.getText().equals("Resume")){
+            int col = GridPane.getColumnIndex(clickedImageView);
+            int row = map.getHeight() - GridPane.getRowIndex(clickedImageView);
+            Optional<AbstractAnimal> optFollowedAnimal = map.getStrongestAnimal(new Vector2d(col, row));
+            if (optFollowedAnimal.isPresent()) {
+                followedAnimal = optFollowedAnimal.get();
+                unfollowAnimalButton.setVisible(true);
+                showPrefPositionsButton.setText("Show plant preferred positions");
+                showPopularGenomeButton.setText("Show animals with the dominating genome");
+                Platform.runLater(this::updateAnimalStatistics);
+                Platform.runLater(() -> mapDisplay.drawMap(followedAnimal, map.getMaxEnergy()));
+            }
+        }
     }
 
     public void setSimulation(Simulation simulation) {
@@ -125,4 +211,5 @@ public class SimulationPresenter implements MapChangeListener {
     public void setSimulationEngine(SimulationEngine simulationEngine) {
         this.simulationEngine = simulationEngine;
     }
+
 }

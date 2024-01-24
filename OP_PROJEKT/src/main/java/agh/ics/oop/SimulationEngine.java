@@ -8,8 +8,13 @@ public class SimulationEngine {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
+    private final Simulation simulation;
 
-    public void runSim(Simulation simulation){
+    public SimulationEngine(Simulation simulation) {
+        this.simulation = simulation;
+    }
+
+    public void runSim(){
         executorService.submit(simulation);
     }
 

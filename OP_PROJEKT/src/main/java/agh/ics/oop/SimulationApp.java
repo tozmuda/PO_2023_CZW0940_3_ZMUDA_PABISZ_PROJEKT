@@ -17,7 +17,6 @@ public class SimulationApp extends Application {
         BorderPane viewRoot = loader.load();
         SimulationController controller = loader.getController();
 
-
         controller.setComboBoxes();
         configureStage(primaryStage, viewRoot);
 

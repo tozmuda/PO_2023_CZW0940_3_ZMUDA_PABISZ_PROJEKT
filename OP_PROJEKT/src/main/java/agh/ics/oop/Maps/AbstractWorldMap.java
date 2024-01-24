@@ -2,9 +2,10 @@ package agh.ics.oop.Maps;
 
 import agh.ics.oop.*;
 import agh.ics.oop.Animals.AbstractAnimal;
+import agh.ics.oop.Observers.MapChangeListener;
 
-import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractWorldMap implements WorldMap {
     // pola od 0 do height/width włącznie
@@ -16,7 +17,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected final List<AbstractAnimal> allAnimalsList = new ArrayList<>();
     protected final List<AbstractAnimal> allDeadAnimalsList = new ArrayList<>();
 
-    private List<MapChangeListener> observers = new ArrayList<>();
+    private final List<MapChangeListener> observers = new ArrayList<>();
 
 
     public AbstractWorldMap(int height, int width, int plantEnergySupply) {
@@ -51,12 +52,12 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     public void mapChanged() {
+        int maxEnergy = getMaxEnergy();
         for (MapChangeListener observer : this.observers) {
-            observer.mapChanged(this);
+            observer.mapChanged(this, maxEnergy);
         }
     }
 
-    // zakładam, że zwierzaki mogą się generować na tych samych polach
     @Override
     public void place(AbstractAnimal animal){
         fields.get(animal.getPosition()).addAnimal(animal);
@@ -105,7 +106,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         for(AbstractAnimal animal : toRemove){
             allAnimalsList.remove(animal);
             fields.get(animal.getPosition()).removeAnimal(animal);
-            animal.setDayOfDeath(days);
+            animal.setDayOfDeath(days - 1);
             allDeadAnimalsList.add(animal);
         }
 
@@ -117,8 +118,8 @@ public abstract class AbstractWorldMap implements WorldMap {
         return Optional.ofNullable(fields.get(position).getPlant());
     }
 
-    protected abstract List<Vector2d> getPreferredPositions();
     protected abstract List<Vector2d> getOtherPositions();
+    protected abstract List<Vector2d> getPreferredPositions();
 
     public static float round1(float number, int scale) {
         int pow = 10;
@@ -139,16 +140,17 @@ public abstract class AbstractWorldMap implements WorldMap {
         for(Map.Entry<Vector2d, Field> entry : this.fields.entrySet()){
             if(entry.getValue().getPlant() != null) cnt+=1;
         }
-        return cnt+=1;
+        return cnt;
     }
 
     @Override
     public int getFreeFields(){
         int cnt = 0;
         for(Map.Entry<Vector2d, Field> entry : this.fields.entrySet()){
-            if(entry.getValue().getAnimals().isEmpty()) cnt+=1;
+            if(entry.getValue().getAnimals().isEmpty() && entry.getValue().getPlant() == null) cnt+=1;
         }
-        return cnt+=1;
+        return cnt;
+        // po co tu była ta jedynka?
     }
 
     @Override
@@ -217,5 +219,21 @@ public abstract class AbstractWorldMap implements WorldMap {
             if (maxi < animal.getEnergy()) maxi = animal.getEnergy();
         }
         return maxi;
+    }
+
+
+    @Override
+    public Set<Vector2d> getAllPopularGenome() {
+        List<Integer> mostPopularGenome = getMostPopularGenotype();
+        return allAnimalsList.stream()
+                .filter(animal -> animal.getGenes().equals(mostPopularGenome) )
+                .map(AbstractAnimal::getPosition)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Optional<AbstractAnimal> getStrongestAnimal(Vector2d position) {
+        if(!fields.get(position).getAnimals().isEmpty()) return Optional.of(fields.get(position).getAnimalsOrder().get(0));
+        return Optional.empty();
     }
 }

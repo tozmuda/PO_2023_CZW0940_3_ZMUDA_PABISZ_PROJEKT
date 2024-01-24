@@ -8,5 +8,5 @@ public interface WorldElement {
 
     String toString();
 
-    String getImageName(int maxEnergy);
+    ImageName getImageName(int maxEnergy);
 }

@@ -1,9 +1,14 @@
-package agh.ics.oop;
+package agh.ics.oop.Maps;
 
 import agh.ics.oop.Animals.AbstractAnimal;
+import agh.ics.oop.Field;
+import agh.ics.oop.Observers.MapChangeListener;
+import agh.ics.oop.Vector2d;
+import agh.ics.oop.WorldElement;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface WorldMap {
     int getHeight();
@@ -26,7 +31,10 @@ public interface WorldMap {
     void addObserver(MapChangeListener observer);
     void removeObserver(MapChangeListener observer);
     void mapChanged();
-
+    Set<Vector2d> getAllPreferredPositions();
+    Set<Vector2d> getAllPopularGenome();
     int getMaxEnergy();
+
+    Optional<AbstractAnimal> getStrongestAnimal(Vector2d position);
 
 }

@@ -12,12 +12,11 @@
         <VBox>
             <GridPane fx:id="mapGrid" prefHeight="650.0" prefWidth="800.0" gridLinesVisible="true" alignment="CENTER">
             </GridPane>
-            <GridPane>
+            <GridPane  hgap="10">
                 <columnConstraints>
                     <ColumnConstraints prefWidth="340.0"/>
                     <ColumnConstraints prefWidth="120.0"/>
-                    <ColumnConstraints prefWidth="120.0"/>
-                    <ColumnConstraints prefWidth="120.0"/>
+                    <ColumnConstraints prefWidth="320.0"/>
                 </columnConstraints>
                 <rowConstraints>
                     <RowConstraints prefHeight="40.0"/>
@@ -41,13 +40,21 @@
                         <Font size="15.0"/>
                     </font>
                 </Button>
-                <Button layoutX="376.0" layoutY="10.0" prefHeight="26.0" prefWidth="93.0"
-                        text="Stop" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP"
-                        onAction="#onSimulationStopClicked">
-                    <font>
-                        <Font size="15.0"/>
-                    </font>
-                </Button>
+                <VBox prefHeight="70.0" prefWidth="320.0" GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                      GridPane.valignment="CENTER">
+                    <Button fx:id="showPrefPositionsButton" layoutX="376.0" layoutY="10.0" prefHeight="26.0" prefWidth="320.0" alignment="CENTER"
+                            text="Show plant preferred positions" visible="false" onAction="#onShowPrefPositionsClicked">
+                        <font>
+                            <Font size="15.0"/>
+                        </font>
+                    </Button>
+                    <Button fx:id="showPopularGenomeButton" layoutX="376.0" layoutY="10.0" prefHeight="26.0" prefWidth="320.0" alignment="CENTER"
+                            text="Show animals with the dominating genome" visible="false" onAction="#onShowPopularGenomeClicked">
+                        <font>
+                            <Font size="15.0"/>
+                        </font>
+                    </Button>
+                </VBox>
             </GridPane>
         </VBox>
 
@@ -86,43 +93,43 @@
                     </font>
                 </Label>
                 <Label fx:id="plantsLabel" layoutX="53.0" layoutY="13.0" prefHeight="22.0" prefWidth="162.0"
-                       text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1"
+                       GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1"
                        GridPane.valignment="CENTER">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="freeFieldsLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0" prefWidth="134.0"
-                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                       GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="animalsLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0" prefWidth="154.0"
-                       text="15" GridPane.columnIndex="1">
+                       GridPane.columnIndex="1">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="childCountLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="125.0"
-                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                       GridPane.columnIndex="1" GridPane.rowIndex="5">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="lifetimeLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="126.0"
-                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                       GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="energyLevelLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="152.0"
-                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                       GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
-                <Label layoutX="28.0" layoutY="13.0" prefHeight="22.0" prefWidth="194.0" text="Average child count:"
+                <Label layoutX="28.0" layoutY="13.0" prefHeight="22.0" prefWidth="194.0" text="Average children count:"
                        GridPane.halignment="LEFT" GridPane.rowIndex="5">
                     <font>
                         <Font size="15.0"/>
@@ -159,7 +166,7 @@
                 </font>
             </Label>
             <Label fx:id="popularGenomeLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="271.0" prefHeight="46.0"
-                   prefWidth="272.0" text="[1, 8, 1, 0, 6, 9, 1, 1, 1]">
+                   prefWidth="272.0">
                 <font>
                     <Font size="15.0"/>
                 </font>
@@ -176,7 +183,7 @@
                 </font>
             </Label>
             <Label fx:id="animalGenomeLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="258.0" prefHeight="26.0"
-                   prefWidth="272.0" text="[1, 8, 1, 0, 6, 9, 1, 1, 1]">
+                   prefWidth="272.0">
                 <font>
                     <Font size="15.0"/>
                 </font>
@@ -202,44 +209,44 @@
                     </font>
                 </Label>
                 <Label fx:id="animalEnergyLabel" layoutX="53.0" layoutY="13.0" prefHeight="22.0" prefWidth="162.0"
-                       text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1"
+                       GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1"
                        GridPane.valignment="CENTER">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="animalChildrenLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0"
-                       prefWidth="146.0" text="3" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                       prefWidth="146.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="animalPlantsLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0" prefWidth="134.0"
-                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                       GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="animalGeneLabel" layoutX="133.0" layoutY="13.0" prefHeight="22.0" prefWidth="154.0"
-                       text="1   (1)" GridPane.columnIndex="1">
+                       GridPane.columnIndex="1">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="animalDeathLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="125.0"
-                       text="-" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                       GridPane.columnIndex="1" GridPane.rowIndex="6">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="animalAgeLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0" prefWidth="126.0"
-                       text="15" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                       GridPane.columnIndex="1" GridPane.rowIndex="5">
                     <font>
                         <Font size="15.0"/>
                     </font>
                 </Label>
                 <Label fx:id="animalDescendantsLabel" layoutX="133.0" layoutY="95.0" prefHeight="22.0"
-                       prefWidth="152.0" text="15" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                       prefWidth="152.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <font>
                         <Font size="15.0"/>
                     </font>
@@ -262,7 +269,7 @@
                         <Font size="15.0"/>
                     </font>
                 </Label>
-                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="184.0" text="Child count:"
+                <Label layoutX="10.0" layoutY="13.0" prefHeight="22.0" prefWidth="184.0" text="Children count:"
                        GridPane.halignment="LEFT" GridPane.rowIndex="3">
                     <font>
                         <Font size="15.0"/>
@@ -281,6 +288,12 @@
                     </font>
                 </Label>
             </GridPane>
+            <Button fx:id="unfollowAnimalButton" layoutX="376.0" layoutY="10.0" prefHeight="26.0" prefWidth="150.0"
+                    text="Unfollow Animal" visible="false" onAction="#onUnfollowButtonClicked">
+                <font>
+                    <Font size="15.0"/>
+                </font>
+            </Button>
         </VBox>
     </right>
 </BorderPane>

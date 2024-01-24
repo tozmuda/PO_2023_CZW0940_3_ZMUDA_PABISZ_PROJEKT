@@ -77,8 +77,8 @@
                              min="0" max="100" initialValue="25" editable="true"
                              GridPane.columnIndex="1" GridPane.halignment="CENTER"
                              GridPane.valignment="CENTER"/>
-                    <Spinner fx:id="genomeLenghtSpinner" layoutX="180.0" layoutY="12.0" prefHeight="25.0"
-                             min="1" max="50" initialValue="10" editable="true"
+                    <Spinner fx:id="genomeLengthSpinner" layoutX="180.0" layoutY="12.0" prefHeight="25.0"
+                             min="1" max="50" initialValue="6" editable="true"
                              prefWidth="120.0" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                              GridPane.rowIndex="6"/>
                     <Spinner fx:id="maxMutationsSpinner" layoutX="10.0" layoutY="12.0" prefHeight="25.0"
@@ -97,7 +97,7 @@
                              min="0" max="100" initialValue="15" editable="true"
                              prefWidth="120.0" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                              GridPane.rowIndex="2"/>
-                    <Spinner fx:id="initialAnimalEnegrySpinner" layoutX="10.0" layoutY="12.0"
+                    <Spinner fx:id="initialAnimalEnergySpinner" layoutX="10.0" layoutY="12.0"
                              min="0" max="100" initialValue="25" editable="true"
                              prefHeight="25.0" prefWidth="120.0" GridPane.columnIndex="1"
                              GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER"/>
@@ -124,11 +124,11 @@
                     <Label alignment="CENTER" layoutX="10.0" layoutY="199.0" prefHeight="18.0" prefWidth="152.0"
                            text="Height:" textAlignment="RIGHT"/>
                     <Spinner fx:id="mapHeightSpinner" prefHeight="25.0" prefWidth="120.0"
-                             min="1" max="50" initialValue="10" editable="true"
+                             min="1" max="40" initialValue="10" editable="true"
                              GridPane.columnIndex="1" GridPane.halignment="CENTER"
                              GridPane.valignment="CENTER"/>
                     <Spinner fx:id="mapWidthSpinner" prefHeight="25.0" prefWidth="120.0"
-                             min="1" max="50" initialValue="10" editable="true"
+                             min="1" max="40" initialValue="10" editable="true"
                              GridPane.columnIndex="1" GridPane.halignment="CENTER"
                              GridPane.rowIndex="1" GridPane.valignment="CENTER"/>
                 </GridPane>
@@ -161,11 +161,11 @@
                               GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3"
                               style="-fx-font-size: 10px;"/>
                     <Spinner fx:id="initialPlantsSpinner" prefHeight="25.0" prefWidth="120.0"
-                             min="0" max="100" initialValue="20" editable="true"
+                             min="0" max="100" initialValue="5" editable="true"
                              GridPane.columnIndex="1" GridPane.halignment="CENTER"
                              GridPane.valignment="CENTER"/>
                     <Spinner fx:id="newPlantsSpinner" prefHeight="25.0"  prefWidth="120.0"
-                             min="0" max="100" initialValue="10" editable="true"
+                             min="0" max="100" initialValue="2" editable="true"
                              GridPane.columnIndex="1" GridPane.halignment="CENTER"
                              GridPane.rowIndex="2"/>
                     <Spinner fx:id="plantEnergySpinner" prefHeight="25.0" prefWidth="120.0"
@@ -177,7 +177,7 @@
         </GridPane>
     </center>
     <bottom>
-        <GridPane alignment="CENTER" prefHeight="145.0" prefWidth="720.0" BorderPane.alignment="CENTER">
+        <GridPane alignment="CENTER" prefHeight="150.0" prefWidth="720.0" BorderPane.alignment="CENTER">
             <columnConstraints>
                 <ColumnConstraints prefWidth="470"/>
                 <ColumnConstraints prefWidth="250"/>
@@ -187,7 +187,7 @@
                 <RowConstraints prefHeight="50"/>
                 <RowConstraints prefHeight="40"/>
             </rowConstraints>
-            <Button fx:id="startButton" prefHeight="30.0" prefWidth="130.0"
+            <Button prefHeight="30.0" prefWidth="130.0"
                     text="Start simulation" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2"
                     onAction="#onSimulationStartClicked">
                 <font>
@@ -195,7 +195,7 @@
                 </font>
             </Button>
             <HBox alignment="CENTER" prefHeight="38.0" prefWidth="447.0" GridPane.rowIndex="2">
-                <CheckBox fx:id="saveStatisticsChcekBox" prefHeight="18.0" prefWidth="157.0"
+                <CheckBox fx:id="saveStatisticsCheckBox" prefHeight="18.0" prefWidth="157.0"
                           text="Export statistics to file"/>
                 <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="70.0" text="Filename:   "/>
                 <TextField fx:id="filenameTextField" prefHeight="26.0" prefWidth="139.0"/>
@@ -204,13 +204,15 @@
                   GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                 <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="122.0" text="Configuration name:   "/>
                 <TextField fx:id="configNameTextField" prefHeight="26.0" prefWidth="139.0"/>
-                <Button fx:id="saveConfigButton" prefHeight="26.0" prefWidth="132.0"
-                        text="Save configuration"/>
+                <Button  prefHeight="26.0" prefWidth="132.0"
+                        text="Save configuration" onAction="#onSaveConfigClicked"/>
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="28.0" prefWidth="474.0"
                   GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="BASELINE">
-                <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="122.0" text="Load configuration:   "/>
+                <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="122.0" text="Choose configuration:"/>
                 <ComboBox fx:id="loadConfigComboBox" prefWidth="150.0"/>
+                <Button  prefHeight="26.0" prefWidth="132.0"
+                         text="Load configuration" onAction="#onLoadConfigClicked"/>
             </HBox>
         </GridPane>
     </bottom>

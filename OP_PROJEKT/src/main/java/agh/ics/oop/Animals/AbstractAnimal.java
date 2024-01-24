@@ -1,13 +1,12 @@
 package agh.ics.oop.Animals;
 
-import agh.ics.oop.Animal;
+import agh.ics.oop.ImageName;
 import agh.ics.oop.MapDirection;
 import agh.ics.oop.Maps.AbstractWorldMap;
 import agh.ics.oop.Vector2d;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Math.round;
@@ -22,10 +21,9 @@ public abstract class AbstractAnimal implements Animal {
     private int numberOfChildren = 0;
     private int plantsEaten = 0;
     private int daysAlive = 0;
-    private int dayOfDeath = 0;
-    private List<Animal> children = new ArrayList<>();
+    private int dayOfDeath = -1;
+    private final List<Animal> children = new ArrayList<>();
 
-    // orientacja i aktualny gen są losowe
     private AbstractAnimal(int numberOfGenes, int spawnDay, int energy){
         this.direction = MapDirection.randomDirection();
         this.currentGene = (int) round(Math.random() * (numberOfGenes - 1));
@@ -110,6 +108,10 @@ public abstract class AbstractAnimal implements Animal {
         return "*";
     }
 
+    @Override
+    public List<Animal> getChildrenList(){
+        return children;
+    }
 
     // co jak wejdzie w górną/dolną granicę mapy jakby na ukos? Jak się wtedy odbija?
     @Override
@@ -196,7 +198,13 @@ public abstract class AbstractAnimal implements Animal {
     }
 
     @Override
+    public int getCurrentGene(){
+        return this.currentGene;
+    }
+
+    @Override
     public int getOffspringCount(){
+        List<Animal> offspring = new LinkedList<>();
         int cnt = -1;
         List<Animal> t = new ArrayList<>();
         t.add(this);
@@ -204,21 +212,27 @@ public abstract class AbstractAnimal implements Animal {
             Animal animal = t.get(0);
             t.remove(0);
             cnt+=1;
-            t.addAll(animal.children);
+            List<Animal> childrenList = animal.getChildrenList();
+            for(Animal a : childrenList){
+                if (!offspring.contains(a)){
+                    offspring.add(a);
+                    t.add(a);
+                }
+            }
         }
         return cnt;
     }
 
 
     @Override
-    public String getImageName(int maxEnergy){
-        if (energy == maxEnergy) return "images/a4.png";
+    public ImageName getImageName(int maxEnergy){
+        if (energy == maxEnergy) return ImageName.ANIMAL4;
         int image = round((float) (energy) / (maxEnergy) * 3);
         return switch (image){
-            case 0 -> "images/a1.png";
-            case 1 -> "images/a2.png";
-            case 2 -> "images/a3.png";
-            default -> "images/a4.png";
+            case 0 -> ImageName.ANIMAL1;
+            case 1 -> ImageName.ANIMAL2;
+            case 2 -> ImageName.ANIMAL3;
+            default -> ImageName.ANIMAL4;
         };
     }
 

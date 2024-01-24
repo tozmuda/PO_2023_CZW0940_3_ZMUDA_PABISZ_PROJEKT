@@ -1,11 +1,12 @@
 package agh.ics.oop.Maps;
 
 import agh.ics.oop.Field;
-import agh.ics.oop.Maps.AbstractWorldMap;
 import agh.ics.oop.Vector2d;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
@@ -17,7 +18,6 @@ public class RainForestMap extends AbstractWorldMap {
 
     public RainForestMap(int height, int width, int plantEnergySupply) {
         super(height, width, plantEnergySupply);
-        System.out.println(height + " " + getForestHeight(height));
         forestLowerBound = (height - getForestHeight(height)) / 2;
         forestUpperBound = (height + getForestHeight(height)) / 2 - 1;
     }
@@ -30,6 +30,16 @@ public class RainForestMap extends AbstractWorldMap {
             else forestHeight++;
         }
         return forestHeight;
+    }
+
+    @Override
+    public Set<Vector2d> getAllPreferredPositions() {
+        return fields.values()
+                .stream()
+                .filter(field -> field.getPosition().getY() >= forestLowerBound
+                        && field.getPosition().getY() <= forestUpperBound)
+                .map(Field::getPosition)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     @Override

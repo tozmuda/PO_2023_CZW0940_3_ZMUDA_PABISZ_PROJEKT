@@ -1,8 +1,5 @@
 package agh.ics.oop;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 public class Plant implements WorldElement{
     private final Vector2d position;
     private final int energySupply;
@@ -27,7 +24,7 @@ public class Plant implements WorldElement{
     }
 
     @Override
-    public String getImageName(int maxEnergy) {
-        return "images/plant.png";
+    public ImageName getImageName(int maxEnergy) {
+        return ImageName.PLANT;
     }
 }

@@ -1,7 +1,6 @@
 package agh.ics.oop.Maps;
 
 import agh.ics.oop.Animals.AbstractAnimal;
-import agh.ics.oop.Field;
 import agh.ics.oop.Vector2d;
 
 import java.util.*;
@@ -31,6 +30,11 @@ public class LifeGivingCorpsesMap extends AbstractWorldMap {
     }
 
     @Override
+    public Set<Vector2d> getAllPreferredPositions() {
+        return preferredPositions.keySet();
+    }
+
+    @Override
     public void removeDeadAnimals(int days) {
         updatePreferredPositions();
         for(AbstractAnimal animal : allAnimalsList){
@@ -42,7 +46,7 @@ public class LifeGivingCorpsesMap extends AbstractWorldMap {
     }
 
     @Override
-    public List<Vector2d> getPreferredPositions() {
+    protected List<Vector2d> getPreferredPositions() {
         return preferredPositions.keySet()
                 .stream()
                 .filter(v -> fields.get(v).getPlant() == null)
