@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package agh.ics.oop.Animals;
 
 import agh.ics.oop.MapDirection;
 import agh.ics.oop.Maps.AbstractWorldMap;
@@ -27,4 +27,6 @@ public interface Animal extends WorldElement {
     void setDayOfDeath(int x);
     int getDayOfDeath();
     int getOffspringCount();
+    List<Animal> getChildrenList();
+    int getCurrentGene();
 }

@@ -1,13 +1,9 @@
 package agh.ics.oop.Maps;
 
 import agh.ics.oop.Animals.AbstractAnimal;
-import agh.ics.oop.Field;
 import agh.ics.oop.Vector2d;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LifeGivingCorpsesMap extends AbstractWorldMap {
@@ -21,7 +17,8 @@ public class LifeGivingCorpsesMap extends AbstractWorldMap {
     }
 
     private void updatePreferredPositions(){
-        for(Vector2d v : preferredPositions.keySet()){
+        List<Vector2d> positions = new LinkedList<>(preferredPositions.keySet());
+        for(Vector2d v : positions){
             int daysLeft = preferredPositions.get(v);
             if (daysLeft != 0) {
                 preferredPositions.put(v, daysLeft - 1);
@@ -30,6 +27,11 @@ public class LifeGivingCorpsesMap extends AbstractWorldMap {
                 preferredPositions.remove(v);
             }
         }
+    }
+
+    @Override
+    public Set<Vector2d> getAllPreferredPositions() {
+        return preferredPositions.keySet();
     }
 
     @Override
@@ -44,7 +46,7 @@ public class LifeGivingCorpsesMap extends AbstractWorldMap {
     }
 
     @Override
-    public List<Vector2d> getPreferredPositions() {
+    protected List<Vector2d> getPreferredPositions() {
         return preferredPositions.keySet()
                 .stream()
                 .filter(v -> fields.get(v).getPlant() == null)

@@ -4,12 +4,11 @@ package agh.ics.oop;
 import agh.ics.oop.Animals.AbstractAnimal;
 import agh.ics.oop.Animals.AnimalBackAndForth;
 import agh.ics.oop.Animals.AnimalBasic;
-import agh.ics.oop.Animals.AnimalVersion;
 import agh.ics.oop.Maps.LifeGivingCorpsesMap;
-import agh.ics.oop.Maps.MapVersion;
 import agh.ics.oop.Maps.RainForestMap;
-import agh.ics.oop.Maps.TempMapVisualizer;
-import agh.ics.oop.Observers.FileOutput;
+import agh.ics.oop.Maps.WorldMap;
+import agh.ics.oop.Observers.MapChangeListener;
+import agh.ics.oop.Observers.SimulationChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,21 +25,63 @@ public class Simulation implements Runnable{
     private int days;
     private final SimulationParameters parameters;
 
-    // czy liczba dni przez które pola są preferowane też ma być parametrem?
-    public Simulation(int mapHeight, int mapWidth, MapVersion mapVersion, AnimalVersion animalsVersion, int delay, int numberOfNewPlants, int startNumberOfPlants,
-                      int startNumberOfAnimals, int startEnergy, int plantEnergySupply, int energyNeededForBreeding, int energyLostForBreeding,
-                      int minMutations, int maxMutations, int genomeLength) {
-        this.map = switch (mapVersion){
-            case RAIN_FOREST -> new RainForestMap(mapHeight, mapWidth, plantEnergySupply);
-            case LIFE_GIVING_CORPSES -> new LifeGivingCorpsesMap(mapHeight, mapWidth, plantEnergySupply, 5);
-        };
-        this.map.addObserver(new FileOutput());
-        this.days = 0;
-        this.parameters = new SimulationParameters(animalsVersion, delay, numberOfNewPlants, energyNeededForBreeding,
-                energyLostForBreeding, minMutations, maxMutations);
+    // TODO pokombinować z parametrami tu
+    private static final int DEFAULT_DELAY = 3500;
+    private int currDelay = 5;
 
-        generateAnimals(startNumberOfAnimals, startEnergy, genomeLength);
-        this.map.generateNewPlants(startNumberOfPlants);
+    private boolean pause = false;
+    private boolean stop = false;
+
+    private final List<SimulationChangeListener> simObservers = new ArrayList<>();
+
+
+    // czy liczba dni przez które pola są preferowane też ma być parametrem?
+    public Simulation(SimulationParameters simParameters) {
+        this.map = switch (simParameters.mapVersion()){
+            case RAIN_FOREST -> new RainForestMap(simParameters.mapHeight(), simParameters.mapWidth(), simParameters.plantEnergySupply());
+            case LIFE_GIVING_CORPSES -> new LifeGivingCorpsesMap(simParameters.mapHeight(), simParameters.mapWidth(), simParameters.plantEnergySupply(), 10);
+        };
+        this.days = 0;
+        this.parameters = simParameters;
+
+        generateAnimals(simParameters.startNumberOfAnimals(), simParameters.startEnergy(), simParameters.genomeLength());
+        this.map.generateNewPlants(simParameters.startNumberOfPlants());
+    }
+
+    public void addObserver(SimulationChangeListener observer){
+        simObservers.add(observer);
+    }
+
+    private void dayChanged(){
+        for (SimulationChangeListener observer : simObservers){
+            observer.dayChanged(map, days);
+        }
+    }
+
+    public void setCurrDelay(int newDelay){
+        currDelay = newDelay;
+    }
+
+    public void pauseSimulation(){
+        pause = true;
+    }
+
+    public void resumeSimulation(){
+        pause = false;
+    }
+
+    public void stopSimulation(){
+        stop = true;
+    }
+
+    public int getDays(){ return days; }
+
+    public WorldMap getMap() {
+        return map;
+    }
+
+    public void addMapObserver(MapChangeListener observer){
+        map.addObserver(observer);
     }
 
 
@@ -54,18 +95,25 @@ public class Simulation implements Runnable{
     }
 
     public void run() {
-        TempMapVisualizer vis = new TempMapVisualizer(map);
-        System.out.println(vis.draw(new Vector2d(0, 0), new Vector2d(map.getWidth(), map.getHeight())));
-        // jakoś będzie trzeba przerwać
-        while (true){
-            days++;
-            System.out.printf("Days: %d%n", days);
-            removeDead(this.days);
-            moveAnimals();
-            eatPlants();
-            breeding();
-            generatePlants();
-            this.map.mapChanged();
+        map.mapChanged();
+        dayChanged();
+        while (!stop){
+            try {
+                    Thread.sleep(DEFAULT_DELAY / 25);
+                }
+                catch (InterruptedException e){
+                    throw new RuntimeException();
+                }
+            if(!pause) {
+                days++;
+                dayChanged();
+                removeDead(this.days);
+                moveAnimals();
+                eatPlants();
+                breeding();
+                generatePlants();
+                map.mapChanged();
+            }
         }
     }
 
@@ -77,12 +125,19 @@ public class Simulation implements Runnable{
         List<AbstractAnimal> allAnimals = map.getAllAnimals();
 
         for(AbstractAnimal animal : allAnimals){
+            while(pause && !stop){
+                try {
+                Thread.sleep(DEFAULT_DELAY / 30);
+                }
+                catch (InterruptedException e){
+                    throw new RuntimeException();
+                }
+            }
+            if (stop) break;
             map.move(animal);
             try {
-                Thread.sleep(parameters.delay());
-                // TODO będzie trzeba usunąć rysowanie mapy w konsoli, na razie dałam dla testów
-                TempMapVisualizer vis = new TempMapVisualizer(map);
-                System.out.println(vis.draw(new Vector2d(0, 0), new Vector2d(map.getWidth(), map.getHeight())));
+                Thread.sleep(DEFAULT_DELAY/ ((long) map.getAnimalCount() * currDelay));
+                this.map.mapChanged();
             }
             catch (InterruptedException e){
                 throw new RuntimeException();
@@ -103,13 +158,11 @@ public class Simulation implements Runnable{
         }
     }
 
-
-    // jeszcze dodać warunek kiedy może się rozmnażać
     private void breeding(){
         for(Field field : map.getFields()){
             List<AbstractAnimal> animalList = field.getAnimalsOrder();
 
-            int numberOfNewAnimals = (int) (animalList.size() / 2);
+            int numberOfNewAnimals = animalList.size() / 2;
             for(int i = 0; i < numberOfNewAnimals; i++){
                 AbstractAnimal a1 = animalList.get(i * 2);
                 AbstractAnimal a2 = animalList.get(i * 2 + 1);
@@ -133,7 +186,7 @@ public class Simulation implements Runnable{
                 map.place(a3);
                 for(int j=0; j<mutatingGenes.size(); j++){
                     int rand = (int) round(Math.random() * 7);
-                    a3.setGene(mutatingGenes.get(i), rand);
+                    a3.setGene(mutatingGenes.get(j), rand);
                 }
             }
         }

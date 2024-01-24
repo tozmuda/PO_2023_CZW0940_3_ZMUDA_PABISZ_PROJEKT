@@ -50,7 +50,6 @@ class PositionsIterator implements Iterator<Vector2d>{
         else if (preferredRange != 0 && otherRange == 0) category = 0;
         else {
             int x = (int) round(Math.random() * 4);
-            System.out.println(x);
             if (x < 4) category = 0;
             else category = 1;
         }
