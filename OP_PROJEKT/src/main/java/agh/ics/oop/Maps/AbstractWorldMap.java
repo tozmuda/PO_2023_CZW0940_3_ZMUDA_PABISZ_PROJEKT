@@ -2,6 +2,7 @@ package agh.ics.oop.Maps;
 
 import agh.ics.oop.*;
 import agh.ics.oop.Animals.AbstractAnimal;
+import agh.ics.oop.Animals.Animal;
 import agh.ics.oop.Observers.MapChangeListener;
 
 import java.util.*;
@@ -11,7 +12,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     // pola od 0 do height/width włącznie
     protected final int height;
     protected final int width;
-    protected final int plantEnergySupply; // nie wiem czy to w tym miejscu ale najwyżej się zmieni
+    protected final int plantEnergySupply;
 
     protected final Map<Vector2d, agh.ics.oop.Field> fields = new HashMap<>();
     protected final List<AbstractAnimal> allAnimalsList = new ArrayList<>();
@@ -114,7 +115,8 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public Optional<WorldElement> objectAt(Vector2d position) {
-        if(!fields.get(position).getAnimals().isEmpty()) return Optional.of(fields.get(position).getAnimalsOrder().get(0));
+        List<AbstractAnimal> fieldAnimals = fields.get(position).getAnimalsOrder();
+        if(!fieldAnimals.isEmpty()) return Optional.of(fieldAnimals.get(0));
         return Optional.ofNullable(fields.get(position).getPlant());
     }
 
@@ -150,7 +152,6 @@ public abstract class AbstractWorldMap implements WorldMap {
             if(entry.getValue().getAnimals().isEmpty() && entry.getValue().getPlant() == null) cnt+=1;
         }
         return cnt;
-        // po co tu była ta jedynka?
     }
 
     @Override

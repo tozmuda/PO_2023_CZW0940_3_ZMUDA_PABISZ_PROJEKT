@@ -91,7 +91,7 @@ public class SimulationController {
         if (activeFilenames.containsValue(filename)){
             throw new FilenameAlreadyInUseException("One of running simulations already uses filename: " + filename);
         }
-        activeFilenames.put(numberOfSimulations, filename);
+        activeFilenames.put(numberOfSimulations + 1, filename);
         FileOutput fileOutput = new FileOutput(filename);
         simulation.addObserver(fileOutput);
     }

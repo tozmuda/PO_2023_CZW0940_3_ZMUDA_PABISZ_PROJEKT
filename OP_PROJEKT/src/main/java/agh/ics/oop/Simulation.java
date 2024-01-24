@@ -96,7 +96,6 @@ public class Simulation implements Runnable{
 
     public void run() {
         map.mapChanged();
-        dayChanged();
         while (!stop){
             try {
                     Thread.sleep(DEFAULT_DELAY / 25);

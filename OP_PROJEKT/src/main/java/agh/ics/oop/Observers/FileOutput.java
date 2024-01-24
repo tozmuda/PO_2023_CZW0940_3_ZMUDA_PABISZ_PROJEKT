@@ -8,7 +8,6 @@ public class FileOutput implements SimulationChangeListener {
     private int cnt = 0;
     private final String filename;
 
-    // TODO do csvki
     public FileOutput(String filename) {
         this.filename = filename + ".csv";
     }
