@@ -223,7 +223,6 @@ public abstract class AbstractAnimal implements Animal {
         return cnt;
     }
 
-
     @Override
     public ImageName getImageName(int maxEnergy){
         if (energy == maxEnergy) return ImageName.ANIMAL4;
@@ -236,4 +235,11 @@ public abstract class AbstractAnimal implements Animal {
         };
     }
 
+    public void setDirection(MapDirection direction) {
+        this.direction = direction;
+    }
+
+    public void setCurrentGene(int currentGene) {
+        this.currentGene = currentGene;
+    }
 }
