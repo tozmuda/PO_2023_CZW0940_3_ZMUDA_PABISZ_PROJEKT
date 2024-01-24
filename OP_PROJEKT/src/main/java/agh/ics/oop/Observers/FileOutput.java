@@ -10,7 +10,7 @@ public class FileOutput implements SimulationChangeListener {
 
     // TODO do csvki
     public FileOutput(String filename) {
-        this.filename = filename + ".txt";
+        this.filename = filename + ".csv";
     }
 
     @Override
@@ -32,6 +32,8 @@ public class FileOutput implements SimulationChangeListener {
             br.write(";");
             br.write(Integer.toString(worldMap.getPlantCount()));
             br.write(";");
+            br.write(Integer.toString(worldMap.getFreeFields()));
+            br.write(";");
             br.write("" + worldMap.getMostPopularGenotype());
             br.write(";");
             br.write(Float.toString(worldMap.getAverageEnergy()));
@@ -50,3 +52,4 @@ public class FileOutput implements SimulationChangeListener {
         cnt++;
     }
 }
+
