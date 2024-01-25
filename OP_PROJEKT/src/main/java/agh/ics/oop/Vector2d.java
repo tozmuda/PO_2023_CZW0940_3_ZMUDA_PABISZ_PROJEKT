@@ -77,7 +77,7 @@ public class Vector2d {
 
 
     public static Vector2d randomPosition(int maxWidth, int maxHeight){
-        return new Vector2d((int) round(Math.random() * (maxWidth - 1)), (int) round(Math.random() * (maxHeight - 1)));
+        return new Vector2d((int) round(Math.random() * (maxWidth)), (int) round(Math.random() * (maxHeight)));
 
     }
 }
